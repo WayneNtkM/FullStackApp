@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
  
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
-    const navigate = useNavigate();
+    const history = useHistory();
  
-    const Auth = async (e) => {
+    const Auth = async (e: any) => {
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/login', {
                 email: email,
                 password: password
             });
-            navigate("/dashboard");
+            history.push("/dashboard");
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);
@@ -24,6 +24,7 @@ const Login = () => {
     }
  
     return (
+        <>
         <section className="hero has-background-grey-light is-fullheight is-fullwidth">
             <div className="hero-body">
                 <div className="container">
@@ -52,6 +53,7 @@ const Login = () => {
                 </div>
             </div>
         </section>
+        </>
     )
 }
  
