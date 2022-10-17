@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
  
 const Register = () => {
     const [name, setName] = useState('');
@@ -8,7 +8,7 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confPassword, setConfPassword] = useState('');
     const [msg, setMsg] = useState('');
-    const navigate = useNavigate();
+    const history = useHistory();
  
     const Register = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -19,7 +19,7 @@ const Register = () => {
                 password: password,
                 confPassword: confPassword
             });
-            navigate("/");
+            history.push("/");
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);

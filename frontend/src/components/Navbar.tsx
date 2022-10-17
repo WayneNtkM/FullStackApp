@@ -1,14 +1,14 @@
 import React from 'react'
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
  
 const Navbar = () => {
-    const navigate = useNavigate();
+    const history = useHistory();
  
     const Logout = async () => {
         try {
             await axios.delete('http://localhost:5000/logout');
-            navigate("/");
+            history.push("/");
         } catch (error) {
             console.log(error);
         }
