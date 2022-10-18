@@ -8,15 +8,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/">
-          <Login/>
-        </Route>
-        <Route path="/register">
-          <Register/>
-        </Route>
+        <Route exact path="/" component={ Register } />
+        <Route path="/login" component={ Login } />
         <Route path="/dashboard">
-          <Navbar/>
-          <Dashboard/>
+          <Navbar />
+          <Dashboard />
         </Route>
       </Switch>
     </BrowserRouter>

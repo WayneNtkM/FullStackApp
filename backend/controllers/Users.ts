@@ -26,16 +26,17 @@ export const Register = async (req: { body: { name: any; email: any; password: a
   if (password !== confPassword) return res.status(400)
     .json({ msg: 'Passwordand Confirm Password do not match.' });
   const salt: any = await bcrypt.genSalt();
-  const hashPassword: any = bcrypt.hash(password, salt);
+  const hashPassword: any = await bcrypt.hash(password, salt);
+  console.log('Senha hash', await hashPassword);
   try {
     await Users.create({
       name: name,
       email: email,
-      password: hashPassword,
+      password: await hashPassword,
     });
     res.json({ msg: 'Registration Successful' });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 

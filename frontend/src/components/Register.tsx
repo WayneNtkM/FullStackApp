@@ -19,14 +19,14 @@ const Register = () => {
                 password: password,
                 confPassword: confPassword
             });
-            history.push("/");
+            history.push("/login");
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);
             }
         }
     }
- 
+
     return (
         <section className="hero has-background-grey-light is-fullheight is-fullwidth">
             <div className="hero-body">

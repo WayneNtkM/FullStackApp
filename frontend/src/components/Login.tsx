@@ -1,16 +1,14 @@
 import React, { useState } from 'react'
 import axios from 'axios';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
     const history = useHistory();
-    const { pathname } = useLocation();
  
     const Auth = async (e: any) => {
-        console.log(pathname);
         
         e.preventDefault();
         try {

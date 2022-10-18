@@ -53,8 +53,11 @@ const Dashboard = () => {
                 Authorization: `Bearer ${token}`
             }
         });
-        setUsers(response.data);
+        console.log(response);
+        
+        setUsers([response.data]);
     }
+ console.log('ola');
  
     return (
         <div className="container mt-5">
