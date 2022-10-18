@@ -2,8 +2,11 @@ import Users from "../models/UserModel";
 import bcrypt from 'bcrypt';
 import jwt, { Secret } from 'jsonwebtoken';
 
-interface USER<t> extends Iterator<t> {
-  [Symbol.iterator](): IterableIterator<t>;
+interface test extends Array<any> {
+    id: number,
+    email: string,
+    password: string,
+    name: string,
 };
 
 export const getUsers = async(req: Request, res: { json: (arg0: any) => void; }) => {
@@ -43,7 +46,7 @@ export const Login = async(req: { body: { email: any; password: any; }; }, res: 
         email: req.body.email,
       },
     });
-    const match = await bcrypt.compare(req.body.password, user[0].password);
+    const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) return res.status(400).json({ msg: 'Wrong Password.' });
     const userId = user.id;
     const name = user.name;
@@ -65,7 +68,7 @@ export const Login = async(req: { body: { email: any; password: any; }; }, res: 
     });
     res.json({ accessToken });
   } catch (error) {
-    res.status(404).json({ msg: 'mail not found.' });
+    res.status(404).json({ msg: 'e-mail not found.' });
   }
 };
 
@@ -89,3 +92,4 @@ export const Logout = async(req: { cookies: { refreshToken: any; }; }, res: { se
 };
 
 // Domain-Driven Design livro
+// Rodrigo Manguinho
