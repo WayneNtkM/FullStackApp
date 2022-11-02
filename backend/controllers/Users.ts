@@ -1,15 +1,10 @@
 import Users from "../models/UserModel";
 import bcrypt from 'bcrypt';
 import jwt, { Secret } from 'jsonwebtoken';
+import { Request, Response } from 'express';
+import { User } from '../types/sequelizeTypes';
 
-interface test extends Array<any> {
-    id: number,
-    email: string,
-    password: string,
-    name: string,
-};
-
-export const getUsers = async(req: Request, res: { json: (arg0: any) => void; }) => {
+export const getUsers = async (_req: Request, res: Response) => {
   try {
     const [users] = await Users.findAll({
       attributes: ['id', 'name', 'email'],
@@ -20,33 +15,32 @@ export const getUsers = async(req: Request, res: { json: (arg0: any) => void; })
   }
 };
 
-export const Register = async (req: { body: { name: any; email: any; password: any; confPassword: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { msg: string; }): any; new(): any; }; }; json: (arg0: { msg: string; }) => void; }) => {
+export const Register = async (req: Request, res: Response) => {
   const { name, email, password, confPassword } = req.body;
 
   if (password !== confPassword) return res.status(400)
-    .json({ msg: 'Passwordand Confirm Password do not match.' });
-  const salt: any = await bcrypt.genSalt();
-  const hashPassword: any = await bcrypt.hash(password, salt);
-  console.log('Senha hash', await hashPassword);
+    .json({ msg: 'Password and Confirm Password do not match.' });
+  const salt = await bcrypt.genSalt();
+  const hashPassword = await bcrypt.hash(password, salt);
   try {
     await Users.create({
       name: name,
       email: email,
-      password: await hashPassword,
+      password: hashPassword,
     });
     res.json({ msg: 'Registration Successful' });
   } catch (error) {
-    // console.log(error);
+    console.log(error);
   }
 };
 
-export const Login = async(req: { body: { email: any; password: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { msg: string; }): void; new(): any; }; }; cookie: (arg0: string, arg1: any, arg2: { httpOnly: boolean; maxAge: number; }) => void; json: (arg0: { accessToken: any; }) => void; }) => {
+export const Login = async(req: Request, res: Response) => {
   try {
-    const [user]: any = await Users.findAll({
+    const [user] = await Users.findAll({
       where: {
         email: req.body.email,
       },
-    });
+    }) as User[];
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) return res.status(400).json({ msg: 'Wrong Password.' });
     const userId = user.id;
@@ -67,22 +61,22 @@ export const Login = async(req: { body: { email: any; password: any; }; }, res: 
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.json({ accessToken });
+    return res.json({ accessToken });
   } catch (error) {
-    res.status(404).json({ msg: 'e-mail not found.' });
+    return res.status(404).json({ msg: 'e-mail not found.' });
   }
 };
 
-export const Logout = async(req: { cookies: { refreshToken: any; }; }, res: { sendStatus: (arg0: number) => any; clearCookie: (arg0: string) => void; }) => {
-  const refreshToken: any = req.cookies.refreshToken;
+export const Logout = async(req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
   if (!refreshToken) return res.sendStatus(204);
-  const [user]: any = await Users.findAll({
+  const [user] = await Users.findAll({
     where: {
       refresh_token: refreshToken,
     },
-  });
-  if (!user[0]) return res.sendStatus(204);
-  const userId: any = user.id;
+  }) as User[];
+  if (!user) return res.sendStatus(204);
+  const userId = user.id;
   await Users.update({ refresh_token: null }, {
     where: {
       id: userId,
