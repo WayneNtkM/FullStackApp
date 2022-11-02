@@ -11,7 +11,7 @@ export const refreshToken = async(req: { cookies: { refreshToken: any; }; }, res
       },
     });
     if (!user) return res.sendStatus(403);
-    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as Secret, (err: any, decoded: any) => {
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as Secret, (err: any) => {
       if(err) return res.sendStatus(403);
         const userId = user.id;
         const name = user.name;
