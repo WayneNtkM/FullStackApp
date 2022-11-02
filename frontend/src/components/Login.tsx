@@ -7,7 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [msg, setMsg] = useState('');
     const history = useHistory();
- 
+
     const Auth = async (e: any) => {
         
         e.preventDefault();
@@ -20,7 +20,7 @@ const Login = () => {
         } catch (error) {
             if (error.response) {
                 setMsg(error.response.data.msg);
-                console.log(error);
+                history.push('/register');
             }
         }
     }
