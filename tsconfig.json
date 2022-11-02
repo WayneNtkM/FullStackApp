@@ -4,7 +4,6 @@
     "moduleResolution": "node",
     "strict": true,
     "module": "commonjs",
-  // "alwaysStrict": false
   },
   "include": ["/**/*.ts"],
   "exclude": ["node_modules"]
