@@ -1,8 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from 'react'
+
+import React, { useState } from 'react'
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
 import { useHistory } from 'react-router-dom';
+import { Decoded } from '../../types/frontend.types';
  
 const Dashboard = () => {
     const [name, setName] = useState('');
@@ -10,25 +11,42 @@ const Dashboard = () => {
     const [expire, setExpire] = useState('');
     const [users, setUsers] = useState([]);
     const history = useHistory();
- 
-    useEffect(() => {
-        refreshToken();
-        getUsers();
-    }, []);
- 
-    const refreshToken = async () => {
+
+    (async () => {
         try {
             const response = await axios.get('http://localhost:5000/token');
             setToken(response.data.accessToken);
-            const decoded: any = jwt_decode(response.data.accessToken);
-            setName(decoded.name);
-            setExpire(decoded.exp);
+            const { name, exp }: Decoded = jwt_decode(response.data.accessToken);
+            setName(name);
+            setExpire(exp);
         } catch (error) {
             if (error.response) {
                 history.push("/");
             }
         }
-    }
+    })();
+    (async () => {
+        const response = await axiosJWT.get('http://localhost:5000/users', {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+    setUsers([response.data]);
+    })();
+ 
+    // const refreshToken = async () => {
+    //     try {
+    //         const response = await axios.get('http://localhost:5000/token');
+    //         setToken(response.data.accessToken);
+    //         const { name, exp }: Decoded = jwt_decode(response.data.accessToken);
+    //         setName(name);
+    //         setExpire(exp);
+    //     } catch (error) {
+    //         if (error.response) {
+    //             history.push("/");
+    //         }
+    //     }
+    // }
  
     const axiosJWT = axios.create();
  
@@ -38,26 +56,23 @@ const Dashboard = () => {
             const response = await axios.get('http://localhost:5000/token');
             config.headers.Authorization = `Bearer ${response.data.accessToken}`;
             setToken(response.data.accessToken);
-            const decoded: any = jwt_decode(response.data.accessToken);
-            setName(decoded.name);
-            setExpire(decoded.exp);
+            const { name, exp }: Decoded = jwt_decode(response.data.accessToken);
+            setName(name);
+            setExpire(exp);
         }
         return config;
     }, (error) => {
         return Promise.reject(error);
     });
  
-    const getUsers = async () => {
-        const response = await axiosJWT.get('http://localhost:5000/users', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-        console.log(response);
-        
-        setUsers([response.data]);
-    }
- console.log('ola');
+    // const getUsers = async () => {
+    //     const response = await axiosJWT.get('http://localhost:5000/users', {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     });
+    //     setUsers([response.data]);
+    // }
  
     return (
         <div className="container mt-5">
